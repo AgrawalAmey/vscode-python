@@ -3,8 +3,8 @@
 'use strict';
 import type { ContentsManager, ServerConnection, Session, SessionManager } from '@jupyterlab/services';
 import { Agent as HttpsAgent } from 'https';
+import * as uuid from 'uuid/v4';
 import { CancellationToken } from 'vscode-jsonrpc';
-
 import { traceError, traceInfo } from '../../common/logger';
 import { IConfigurationService, IOutputChannel } from '../../common/types';
 import { sleep } from '../../common/utils/async';
@@ -234,26 +234,41 @@ export class JupyterSessionManager implements IJupyterSessionManager {
         let requestInit: any = { cache: 'no-store', credentials: 'same-origin' };
         let cookieString;
         let allowUnauthorized;
+        let xAuthToken;
 
         // If no token is specified prompt for a password
         if (connInfo.token === '' || connInfo.token === 'null') {
-            if (this.failOnPassword) {
-                throw new Error('Password request not allowed.');
-            }
-            serverSettings = { ...serverSettings, token: '' };
-            const pwSettings = await this.jupyterPasswordConnect.getPasswordConnectionInfo(
-                connInfo.baseUrl,
-                connInfo.allowUnauthorized ? true : false
-            );
-            if (pwSettings && !pwSettings.emptyPassword) {
-                cookieString = this.getSessionCookieString(pwSettings);
-                const requestHeaders = { Cookie: cookieString, 'X-XSRFToken': pwSettings.xsrfCookie };
-                requestInit = { ...requestInit, headers: requestHeaders };
-            } else if (pwSettings && pwSettings.emptyPassword) {
-                serverSettings = { ...serverSettings, token: connInfo.token };
+            if (connInfo.baseUrl.includes('qubole')) {
+                xAuthToken = await this.jupyterPasswordConnect.getXAuthTokenConnectionInfo();
+                if (xAuthToken && xAuthToken !== '') {
+                    const _uuid = uuid();
+                    cookieString = `_xsrf=${_uuid}`;
+                    const requestHeaders = {
+                        'X-AUTH-TOKEN': xAuthToken,
+                        'X-XSRFToken': _uuid,
+                        Cookie: cookieString
+                    };
+                    requestInit = { ...requestInit, headers: requestHeaders };
+                }
             } else {
-                // Failed to get password info, notify the user
-                throw new Error(localize.DataScience.passwordFailure());
+                if (this.failOnPassword) {
+                    throw new Error('Password request not allowed.');
+                }
+                serverSettings = { ...serverSettings, token: '' };
+                const pwSettings = await this.jupyterPasswordConnect.getPasswordConnectionInfo(
+                    connInfo.baseUrl,
+                    connInfo.allowUnauthorized ? true : false
+                );
+                if (pwSettings && !pwSettings.emptyPassword) {
+                    cookieString = this.getSessionCookieString(pwSettings);
+                    const requestHeaders = { Cookie: cookieString, 'X-XSRFToken': pwSettings.xsrfCookie };
+                    requestInit = { ...requestInit, headers: requestHeaders };
+                } else if (pwSettings && pwSettings.emptyPassword) {
+                    serverSettings = { ...serverSettings, token: connInfo.token };
+                } else {
+                    // Failed to get password info, notify the user
+                    throw new Error(localize.DataScience.passwordFailure());
+                }
             }
         } else {
             serverSettings = { ...serverSettings, token: connInfo.token };

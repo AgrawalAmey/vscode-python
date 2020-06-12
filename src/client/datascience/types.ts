@@ -317,6 +317,7 @@ export interface IJupyterPasswordConnect {
         url: string,
         allowUnauthorized: boolean
     ): Promise<IJupyterPasswordConnectInfo | undefined>;
+    getXAuthTokenConnectionInfo(): Promise<string | undefined>;
 }
 
 export const IJupyterSession = Symbol('IJupyterSession');

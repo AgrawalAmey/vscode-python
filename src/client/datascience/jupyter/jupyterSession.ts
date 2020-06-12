@@ -254,14 +254,21 @@ export class JupyterSession extends BaseJupyterSession {
         contentsManager: ContentsManager,
         cancelToken?: CancellationToken
     ): Promise<ISessionWithSocket> {
+        const name = uuid();
         // Create a temporary notebook for this session.
-        this.notebookFiles.push(await contentsManager.newUntitled({ type: 'notebook' }));
-
-        // Create our session options using this temporary notebook and our connection info
+        this.notebookFiles.push(
+            await contentsManager.newUntitled({
+                type: 'notebook',
+                path: 'Users/ameya@qubole.com/vscode',
+                name: `${name}.ipynb`,
+                kernel: { name: 'pysparkkernel' }
+                // tslint:disable-next-line: no-any
+            } as any)
+        ); // Create our session options using this temporary notebook and our connection info
         const options: Session.IOptions = {
             path: this.notebookFiles[this.notebookFiles.length - 1].path,
             kernelName: kernelSpec ? kernelSpec.name : '',
-            name: uuid(), // This is crucial to distinguish this session from any other.
+            name: name, // This is crucial to distinguish this session from any other.
             serverSettings: serverSettings
         };
 

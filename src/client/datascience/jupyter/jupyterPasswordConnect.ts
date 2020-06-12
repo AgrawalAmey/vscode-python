@@ -76,6 +76,11 @@ export class JupyterPasswordConnect implements IJupyterPasswordConnect {
         }
     }
 
+    public async getXAuthTokenConnectionInfo(): Promise<string | undefined> {
+        // Get password first
+        return this.getXAuthToken();
+    }
+
     // For HTTPS connections respect our allowUnauthorized setting by adding in an agent to enable that on the request
     private addAllowUnauthorized(
         url: string,
@@ -94,6 +99,15 @@ export class JupyterPasswordConnect implements IJupyterPasswordConnect {
         // First get the proposed URI from the user
         return this.appShell.showInputBox({
             prompt: localize.DataScience.jupyterSelectPasswordPrompt(),
+            ignoreFocusOut: true,
+            password: true
+        });
+    }
+
+    private async getXAuthToken(): Promise<string | undefined> {
+        // First get the proposed URI from the user
+        return this.appShell.showInputBox({
+            prompt: localize.DataScience.jupyterSelectXAuthTokenPrompt(),
             ignoreFocusOut: true,
             password: true
         });
