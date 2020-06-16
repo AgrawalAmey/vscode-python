@@ -8,6 +8,7 @@ import * as typemoq from 'typemoq';
 
 import { IApplicationShell } from '../../client/common/application/types';
 import { JupyterPasswordConnect } from '../../client/datascience/jupyter/jupyterPasswordConnect';
+import { MockMemento } from '../mocks/mementos';
 
 // tslint:disable:no-any max-func-body-length
 suite('JupyterPasswordConnect', () => {
@@ -21,7 +22,7 @@ suite('JupyterPasswordConnect', () => {
     setup(() => {
         appShell = typemoq.Mock.ofType<IApplicationShell>();
         appShell.setup((a) => a.showInputBox(typemoq.It.isAny())).returns(() => Promise.resolve('Python'));
-        jupyterPasswordConnect = new JupyterPasswordConnect(appShell.object);
+        jupyterPasswordConnect = new JupyterPasswordConnect(appShell.object, new MockMemento());
     });
 
     test('getPasswordConnectionInfo', async () => {

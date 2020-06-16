@@ -2,18 +2,24 @@
 // Licensed under the MIT License.
 'use strict';
 import { Agent as HttpsAgent } from 'https';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, named } from 'inversify';
 import * as nodeFetch from 'node-fetch';
 import { URLSearchParams } from 'url';
+import { Memento } from 'vscode';
 import { IApplicationShell } from '../../common/application/types';
+import { GLOBAL_MEMENTO, IMemento } from '../../common/types';
 import * as localize from '../../common/utils/localize';
 import { captureTelemetry, sendTelemetryEvent } from '../../telemetry';
+import { addToApiTokenList, getApiTokenForUrl } from '../common';
 import { IJupyterPasswordConnect, IJupyterPasswordConnectInfo } from '../types';
 import { Telemetry } from './../constants';
 
 @injectable()
 export class JupyterPasswordConnect implements IJupyterPasswordConnect {
-    constructor(@inject(IApplicationShell) private appShell: IApplicationShell) {}
+    constructor(
+        @inject(IApplicationShell) private appShell: IApplicationShell,
+        @inject(IMemento) @named(GLOBAL_MEMENTO) private globalState: Memento
+    ) {}
 
     @captureTelemetry(Telemetry.GetPasswordAttempt)
     public async getPasswordConnectionInfo(
@@ -76,6 +82,20 @@ export class JupyterPasswordConnect implements IJupyterPasswordConnect {
         }
     }
 
+    public async getXAuthTokenConnectionInfo(url: string): Promise<string> {
+        const savedToken = getApiTokenForUrl(this.globalState, url);
+        if (savedToken === undefined) {
+            let inputToken: string | undefined;
+            do {
+                inputToken = await this.getXAuthToken();
+            } while (inputToken === undefined || inputToken === '');
+
+            addToApiTokenList(this.globalState, inputToken, url);
+            return Promise.resolve(inputToken);
+        }
+        return Promise.resolve(savedToken);
+    }
+
     // For HTTPS connections respect our allowUnauthorized setting by adding in an agent to enable that on the request
     private addAllowUnauthorized(
         url: string,
@@ -94,6 +114,15 @@ export class JupyterPasswordConnect implements IJupyterPasswordConnect {
         // First get the proposed URI from the user
         return this.appShell.showInputBox({
             prompt: localize.DataScience.jupyterSelectPasswordPrompt(),
+            ignoreFocusOut: true,
+            password: true
+        });
+    }
+
+    private async getXAuthToken(): Promise<string | undefined> {
+        // First get the proposed URI from the user
+        return this.appShell.showInputBox({
+            prompt: localize.DataScience.jupyterSelectXAuthTokenPrompt(),
             ignoreFocusOut: true,
             password: true
         });

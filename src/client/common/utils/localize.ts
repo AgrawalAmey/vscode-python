@@ -515,6 +515,10 @@ export namespace DataScience {
         'DataScience.jupyterSelectPasswordPrompt',
         'Enter your notebook password'
     );
+    export const jupyterSelectXAuthTokenPrompt = localize(
+        'DataScience.jupyterSelectXAuthTokenPrompt',
+        'Enter your notebook x-auth-token'
+    );
     export const jupyterNotebookFailure = localize(
         'DataScience.jupyterNotebookFailure',
         'Jupyter notebook failed to launch. \r\n{0}'
