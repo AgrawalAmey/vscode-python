@@ -57,5 +57,5 @@
     ],
     "typescript.preferences.importModuleSpecifier": "relative",
     "debug.javascript.usePreview": false,
-    "python.dataScience.jupyterServerURI": "local"
+    "python.dataScience.jupyterServerURI": "https://ameya.qubole.net/jupyter-notebook-12"
 }

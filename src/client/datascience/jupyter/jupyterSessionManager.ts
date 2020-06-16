@@ -290,7 +290,8 @@ export class JupyterSessionManager implements IJupyterSessionManager {
             init: requestInit,
             WebSocket: createJupyterWebSocket(
                 cookieString,
-                allowUnauthorized
+                allowUnauthorized,
+                xAuthToken
                 // tslint:disable-next-line:no-any
             ) as any
         };
