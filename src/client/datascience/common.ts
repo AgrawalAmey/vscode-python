@@ -52,6 +52,7 @@ export function getSavedUriList(globalState: Memento): { uri: string; time: numb
           })
         : [];
 }
+
 export function addToUriList(globalState: Memento, uri: string, time: number) {
     const uriList = getSavedUriList(globalState);
 
@@ -61,6 +62,29 @@ export function addToUriList(globalState: Memento, uri: string, time: number) {
     editList.splice(0, 0, { uri, time });
 
     globalState.update(Settings.JupyterServerUriList, editList).then(noop, noop);
+}
+
+function getSavedApiTokenList(globalState: Memento): { token: string; uri: string }[] {
+    const uriList = globalState.get<{ token: string; uri: string }[]>(Settings.JupyterServerApiTokenList);
+    return uriList ? uriList : [];
+}
+
+export function addToApiTokenList(globalState: Memento, token: string, uri: string) {
+    const uriList = getSavedApiTokenList(globalState);
+
+    const editList = uriList.filter((f, i) => {
+        return f.uri !== uri && i < Settings.JupyterServerApiTokenListMax - 1;
+    });
+
+    editList.splice(0, 0, { token, uri });
+
+    globalState.update(Settings.JupyterServerApiTokenList, editList).then(noop, noop);
+}
+
+export function getApiTokenForUrl(globalState: Memento, uri: string): string | undefined {
+    return getSavedApiTokenList(globalState).find((f, _) => {
+        return f.uri === uri;
+    })?.token;
 }
 
 function fixupOutput(output: nbformat.IOutput): nbformat.IOutput {

@@ -239,7 +239,7 @@ export class JupyterSessionManager implements IJupyterSessionManager {
         // If no token is specified prompt for a password
         if (connInfo.token === '' || connInfo.token === 'null') {
             if (connInfo.baseUrl.includes('qubole')) {
-                xAuthToken = await this.jupyterPasswordConnect.getXAuthTokenConnectionInfo();
+                xAuthToken = await this.jupyterPasswordConnect.getXAuthTokenConnectionInfo(connInfo.baseUrl);
                 if (xAuthToken && xAuthToken !== '') {
                     const _uuid = uuid();
                     cookieString = `_xsrf=${_uuid}`;

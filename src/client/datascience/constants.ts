@@ -377,6 +377,8 @@ export namespace Settings {
     export const JupyterServerLocalLaunch = 'local';
     export const JupyterServerUriList = 'python.dataScience.jupyterServer.uriList';
     export const JupyterServerUriListMax = 10;
+    export const JupyterServerApiTokenList = 'python.dataScience.jupyterServer.apiTokenList';
+    export const JupyterServerApiTokenListMax = 10;
     // If this timeout expires, ignore the completion request sent to Jupyter.
     export const IntellisenseTimeout = 500;
     // If this timeout expires, ignore the completions requests. (don't wait for it to complete).
