@@ -10,7 +10,7 @@ import { IApplicationShell } from '../../common/application/types';
 import { GLOBAL_MEMENTO, IMemento } from '../../common/types';
 import * as localize from '../../common/utils/localize';
 import { captureTelemetry, sendTelemetryEvent } from '../../telemetry';
-import { addToApiTokenList, getApiTokenForUrl } from '../common';
+import { addToQuboleConnectionInfoList, getQuboleConnectionInfoForUrl, getUriSaveTime } from '../common';
 import { IJupyterPasswordConnect, IJupyterPasswordConnectInfo } from '../types';
 import { Telemetry } from './../constants';
 
@@ -82,18 +82,35 @@ export class JupyterPasswordConnect implements IJupyterPasswordConnect {
         }
     }
 
-    public async getXAuthTokenConnectionInfo(url: string): Promise<string> {
-        const savedToken = getApiTokenForUrl(this.globalState, url);
-        if (savedToken === undefined) {
-            let inputToken: string | undefined;
-            do {
-                inputToken = await this.getXAuthToken();
-            } while (inputToken === undefined || inputToken === '');
+    public async getQuboleConnectionInfoFromInput(
+        url: string,
+        urlSaveTime: number
+    ): Promise<{ email: string; token: string }> {
+        let inputEmail: string | undefined;
+        let inputToken: string | undefined;
+        do {
+            inputToken = await this.getXAuthToken();
+            inputEmail = await this.getUserEmail();
+        } while (inputToken === undefined || inputToken === '' || inputEmail === undefined || inputEmail === '');
 
-            addToApiTokenList(this.globalState, inputToken, url);
-            return Promise.resolve(inputToken);
+        addToQuboleConnectionInfoList(this.globalState, inputEmail, inputToken, url, urlSaveTime);
+        return Promise.resolve({ email: inputEmail, token: inputToken });
+    }
+
+    public async getQuboleConnectionInfo(url: string): Promise<{ email: string; token: string }> {
+        const urlSaveTime = getUriSaveTime(this.globalState, url);
+
+        if (urlSaveTime === undefined) {
+            return Promise.reject();
         }
-        return Promise.resolve(savedToken);
+
+        const savedInfo = getQuboleConnectionInfoForUrl(this.globalState, url);
+
+        if (savedInfo === undefined || savedInfo.uriSaveTime !== urlSaveTime) {
+            return this.getQuboleConnectionInfoFromInput(url, urlSaveTime);
+        }
+
+        return Promise.resolve({ email: savedInfo.email, token: savedInfo.token });
     }
 
     // For HTTPS connections respect our allowUnauthorized setting by adding in an agent to enable that on the request
@@ -125,6 +142,15 @@ export class JupyterPasswordConnect implements IJupyterPasswordConnect {
             prompt: localize.DataScience.jupyterSelectXAuthTokenPrompt(),
             ignoreFocusOut: true,
             password: true
+        });
+    }
+
+    private async getUserEmail(): Promise<string | undefined> {
+        // First get the proposed URI from the user
+        return this.appShell.showInputBox({
+            prompt: localize.DataScience.jupyterSelectEmailPrompt(),
+            ignoreFocusOut: true,
+            password: false
         });
     }
 

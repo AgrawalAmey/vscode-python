@@ -232,24 +232,30 @@ export class JupyterSessionManager implements IJupyterSessionManager {
         // Agent is allowed to be set on this object, but ts doesn't like it on RequestInit, so any
         // tslint:disable-next-line:no-any
         let requestInit: any = { cache: 'no-store', credentials: 'same-origin' };
+        let isQuboleConnection = false;
         let cookieString;
         let allowUnauthorized;
+
         let xAuthToken;
+        let email;
 
         // If no token is specified prompt for a password
         if (connInfo.token === '' || connInfo.token === 'null') {
             if (connInfo.baseUrl.includes('qubole')) {
-                xAuthToken = await this.jupyterPasswordConnect.getXAuthTokenConnectionInfo(connInfo.baseUrl);
-                if (xAuthToken && xAuthToken !== '') {
-                    const _uuid = uuid();
-                    cookieString = `_xsrf=${_uuid}`;
-                    const requestHeaders = {
-                        'X-AUTH-TOKEN': xAuthToken,
-                        'X-XSRFToken': _uuid,
-                        Cookie: cookieString
-                    };
-                    requestInit = { ...requestInit, headers: requestHeaders };
-                }
+                const connectionInfo = await this.jupyterPasswordConnect.getQuboleConnectionInfo(connInfo.baseUrl);
+                isQuboleConnection = true;
+                xAuthToken = connectionInfo.token;
+                email = connectionInfo.email;
+
+                const _uuid = uuid();
+                cookieString = `_xsrf=${_uuid}`;
+                const requestHeaders = {
+                    'X-AUTH-TOKEN': xAuthToken,
+                    'X-XSRFToken': _uuid,
+                    Cookie: cookieString
+                };
+
+                requestInit = { ...requestInit, headers: requestHeaders };
             } else {
                 if (this.failOnPassword) {
                     throw new Error('Password request not allowed.');
@@ -293,8 +299,11 @@ export class JupyterSessionManager implements IJupyterSessionManager {
                 allowUnauthorized,
                 xAuthToken
                 // tslint:disable-next-line:no-any
-            ) as any
-        };
+            ) as any,
+            email: email,
+            isQuboleConnection: isQuboleConnection
+            // tslint:disable-next-line:no-any
+        } as any;
 
         traceInfo(`Creating server with settings : ${JSON.stringify(serverSettings)}`);
         return this.jupyterlab.ServerConnection.makeSettings(serverSettings);

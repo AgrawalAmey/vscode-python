@@ -519,6 +519,10 @@ export namespace DataScience {
         'DataScience.jupyterSelectXAuthTokenPrompt',
         'Enter your notebook x-auth-token'
     );
+    export const jupyterSelectEmailPrompt = localize(
+        'DataScience.jupyterSelectEmailPrompt',
+        'Enter your Qubole user email'
+    );
     export const jupyterNotebookFailure = localize(
         'DataScience.jupyterNotebookFailure',
         'Jupyter notebook failed to launch. \r\n{0}'

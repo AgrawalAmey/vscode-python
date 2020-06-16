@@ -64,27 +64,46 @@ export function addToUriList(globalState: Memento, uri: string, time: number) {
     globalState.update(Settings.JupyterServerUriList, editList).then(noop, noop);
 }
 
-function getSavedApiTokenList(globalState: Memento): { token: string; uri: string }[] {
-    const uriList = globalState.get<{ token: string; uri: string }[]>(Settings.JupyterServerApiTokenList);
-    return uriList ? uriList : [];
+export function getUriSaveTime(globalState: Memento, uri: string): number | undefined {
+    return getSavedUriList(globalState).find((f, _) => {
+        return f.uri === uri;
+    })?.time;
 }
 
-export function addToApiTokenList(globalState: Memento, token: string, uri: string) {
-    const uriList = getSavedApiTokenList(globalState);
+function getSavedQuboleConnectionInfoList(
+    globalState: Memento
+): { email: string; token: string; uri: string; uriSaveTime: number }[] {
+    const infoList = globalState.get<{ email: string; token: string; uri: string; uriSaveTime: number }[]>(
+        Settings.JupyterServerQuboleInfoList
+    );
+    return infoList ? infoList : [];
+}
 
-    const editList = uriList.filter((f, i) => {
-        return f.uri !== uri && i < Settings.JupyterServerApiTokenListMax - 1;
+export function addToQuboleConnectionInfoList(
+    globalState: Memento,
+    email: string,
+    token: string,
+    uri: string,
+    uriSaveTime: number
+) {
+    const infoList = getSavedQuboleConnectionInfoList(globalState);
+
+    const editList = infoList.filter((f, i) => {
+        return f.uri !== uri && i < Settings.JupyterServerQuboleInfoListMax - 1;
     });
 
-    editList.splice(0, 0, { token, uri });
+    editList.splice(0, 0, { email, token, uri, uriSaveTime });
 
-    globalState.update(Settings.JupyterServerApiTokenList, editList).then(noop, noop);
+    globalState.update(Settings.JupyterServerQuboleInfoList, editList).then(noop, noop);
 }
 
-export function getApiTokenForUrl(globalState: Memento, uri: string): string | undefined {
-    return getSavedApiTokenList(globalState).find((f, _) => {
+export function getQuboleConnectionInfoForUrl(
+    globalState: Memento,
+    uri: string
+): { email: string; token: string; uri: string; uriSaveTime: number } | undefined {
+    return getSavedQuboleConnectionInfoList(globalState).find((f, _) => {
         return f.uri === uri;
-    })?.token;
+    });
 }
 
 function fixupOutput(output: nbformat.IOutput): nbformat.IOutput {

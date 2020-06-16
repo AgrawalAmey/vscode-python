@@ -254,17 +254,37 @@ export class JupyterSession extends BaseJupyterSession {
         contentsManager: ContentsManager,
         cancelToken?: CancellationToken
     ): Promise<ISessionWithSocket> {
-        const name = uuid();
-        // Create a temporary notebook for this session.
-        this.notebookFiles.push(
-            await contentsManager.newUntitled({
-                type: 'notebook',
-                path: 'Users/ameya@qubole.com/vscode',
-                name: `${name}.ipynb`,
-                kernel: { name: 'pysparkkernel' }
-                // tslint:disable-next-line: no-any
-            } as any)
-        ); // Create our session options using this temporary notebook and our connection info
+        // Create a folder to store temporary notebook
+        // tslint:disable-next-line:no-any
+        if ((serverSettings as any).isQuboleConnection) {
+            try {
+                await contentsManager.newUntitled({
+                    type: 'directory',
+                    path: `Users/${(serverSettings as any).email}`, // tslint:disable-line:no-any
+                    name: 'vscode'
+                    // tslint:disable-next-line: no-any
+                } as any);
+            } catch {
+                // pass
+            }
+            // Create a temporary notebook for this session.
+            const name = uuid();
+
+            this.notebookFiles.push(
+                await contentsManager.newUntitled({
+                    type: 'notebook',
+                    path: `Users/${(serverSettings as any).email}`, // tslint:disable-line:no-any
+                    name: `${name}.ipynb`,
+                    kernel: { name: 'pysparkkernel' }
+                    // tslint:disable-next-line: no-any
+                } as any)
+            );
+        } else {
+            // Create a temporary notebook for this session.
+            this.notebookFiles.push(await contentsManager.newUntitled({ type: 'notebook' }));
+        }
+
+        // Create our session options using this temporary notebook and our connection info
         const options: Session.IOptions = {
             path: this.notebookFiles[this.notebookFiles.length - 1].path,
             kernelName: kernelSpec ? kernelSpec.name : '',
