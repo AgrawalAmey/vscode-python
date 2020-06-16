@@ -3,6 +3,7 @@
 'use strict';
 import { Agent as HttpsAgent } from 'https';
 import { inject, injectable, named } from 'inversify';
+import { noop } from 'lodash';
 import * as nodeFetch from 'node-fetch';
 import { URLSearchParams } from 'url';
 import { Memento } from 'vscode';
@@ -98,10 +99,11 @@ export class JupyterPasswordConnect implements IJupyterPasswordConnect {
     }
 
     public async getQuboleConnectionInfo(url: string): Promise<{ email: string; token: string }> {
-        const urlSaveTime = getUriSaveTime(this.globalState, url);
+        const urlSaveTime = getUriSaveTime(this.globalState, `${url}?toke=null`);
 
         if (urlSaveTime === undefined) {
-            return Promise.reject();
+            this.appShell.showErrorMessage('Could not get URL metadata.');
+            throw new Error('Could not get URL metadata.');
         }
 
         const savedInfo = getQuboleConnectionInfoForUrl(this.globalState, url);
