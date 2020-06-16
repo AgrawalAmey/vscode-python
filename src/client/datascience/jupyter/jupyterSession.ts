@@ -254,6 +254,8 @@ export class JupyterSession extends BaseJupyterSession {
         contentsManager: ContentsManager,
         cancelToken?: CancellationToken
     ): Promise<ISessionWithSocket> {
+        const name = uuid();
+
         // Create a folder to store temporary notebook
         // tslint:disable-next-line:no-any
         if ((serverSettings as any).isQuboleConnection) {
@@ -268,7 +270,6 @@ export class JupyterSession extends BaseJupyterSession {
                 // pass
             }
             // Create a temporary notebook for this session.
-            const name = uuid();
 
             this.notebookFiles.push(
                 await contentsManager.newUntitled({
