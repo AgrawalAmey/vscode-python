@@ -98,14 +98,14 @@ export class JupyterPasswordConnect implements IJupyterPasswordConnect {
     }
 
     public async getQuboleConnectionInfo(url: string): Promise<{ email: string; token: string }> {
-        const urlSaveTime = getUriSaveTime(this.globalState, `${url}?token=null`);
+        const urlSaveTime = getUriSaveTime(this.globalState, url);
+
+        const savedInfo = getQuboleConnectionInfoForUrl(this.globalState, url);
 
         if (urlSaveTime === undefined) {
             this.appShell.showErrorMessage('Could not get URL metadata.');
             throw new Error('Could not get URL metadata.');
         }
-
-        const savedInfo = getQuboleConnectionInfoForUrl(this.globalState, url);
 
         if (savedInfo === undefined || savedInfo.uriSaveTime !== urlSaveTime) {
             return this.getQuboleConnectionInfoFromInput(url, urlSaveTime);

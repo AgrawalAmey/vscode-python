@@ -47,7 +47,7 @@ import { PythonInterpreter } from '../../pythonEnvironments/discovery/types';
 import { captureTelemetry, sendTelemetryEvent } from '../../telemetry';
 import { generateCellRangesFromDocument } from '../cellFactory';
 import { CellMatcher } from '../cellMatcher';
-import { addToUriList, translateKernelLanguageToMonaco } from '../common';
+import { translateKernelLanguageToMonaco } from '../common';
 import { Commands, Identifiers, Telemetry } from '../constants';
 import { ColumnWarningSize, IDataViewerFactory } from '../data-viewing/types';
 import {
@@ -1142,9 +1142,6 @@ export abstract class InteractiveBase extends WebViewHost<IInteractiveWindowMapp
                 localizedUri = localize.DataScience.localJupyterServer();
             } else {
                 localizedUri = serverConnection.displayName;
-
-                // Log this remote URI into our MRU list
-                addToUriList(this.globalStorage, localizedUri, Date.now());
             }
         }
 

@@ -66,7 +66,7 @@ export function addToUriList(globalState: Memento, uri: string, time: number) {
 
 export function getUriSaveTime(globalState: Memento, uri: string): number | undefined {
     return getSavedUriList(globalState).find((f, _) => {
-        return f.uri === uri;
+        return f.uri.split('?')[0] === uri.split('?')[0];
     })?.time;
 }
 

@@ -16,7 +16,7 @@ import {
     IQuickPickParameters
 } from '../../common/utils/multiStepInput';
 import { captureTelemetry } from '../../telemetry';
-import { getSavedUriList } from '../common';
+import { addToUriList, getSavedUriList } from '../common';
 import { Settings, Telemetry } from '../constants';
 
 const defaultUri = 'https://hostname:8080/?token=849d61a414abafab97bc4aab1f3547755ddc232c2b8cb7fe';
@@ -85,6 +85,7 @@ export class JupyterServerSelector {
         });
 
         if (uri) {
+            addToUriList(this.globalState, uri, Date.now());
             await this.setJupyterURIToRemote(uri);
         }
     }
