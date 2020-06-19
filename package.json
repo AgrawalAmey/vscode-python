@@ -1,16 +1,16 @@
 {
-    "name": "python",
-    "displayName": "Python",
+    "name": "qubole-python",
+    "displayName": "Qubole Python",
     "description": "Linting, Debugging (multi-threaded, remote), Intellisense, Jupyter Notebooks, code formatting, refactoring, unit tests, snippets, and more.",
-    "version": "2020.6.0-rc",
+    "version": "2020.6.0-q",
     "featureFlags": {
         "usingNewInterpreterStorage": true
     },
     "languageServerVersion": "0.5.30",
-    "publisher": "ms-python",
+    "publisher": "qubole-ds",
     "enableProposedApi": false,
     "author": {
-        "name": "Microsoft Corporation"
+        "name": "Qubole"
     },
     "license": "MIT",
     "homepage": "https://github.com/Microsoft/vscode-python",
@@ -2977,7 +2977,7 @@
         }
     },
     "scripts": {
-        "package": "gulp clean && gulp prePublishBundle && vsce package -o ms-python-insiders.vsix",
+        "package": "gulp clean && gulp prePublishBundle && vsce package -o qubole-python-insiders.vsix",
         "compile": "tsc -watch -p ./",
         "compiled": "deemon npm run compile",
         "kill-compiled": "deemon --kill npm run compile",
