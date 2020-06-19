@@ -195,47 +195,48 @@ export class KernelVariables implements IJupyterVariables {
         if (cells.length > 0 && cells[0].data) {
             const codeCell = cells[0].data as nbformat.ICodeCell;
             if (codeCell.outputs.length > 0) {
-                const codeCellOutput = codeCell.outputs[0] as nbformat.IOutput;
-                if (
-                    codeCellOutput &&
-                    codeCellOutput.output_type === 'stream' &&
-                    codeCellOutput.name === 'stderr' &&
-                    codeCellOutput.hasOwnProperty('text')
-                ) {
-                    const resultString = codeCellOutput.text as string;
-                    // See if this the IOPUB data rate limit problem
-                    if (resultString.includes('iopub_data_rate_limit')) {
-                        throw new JupyterDataRateLimitError();
-                    } else {
-                        const error = localize.DataScience.jupyterGetVariablesExecutionError().format(resultString);
+                for (const codeCellOutput of codeCell.outputs) {
+                    if (
+                        codeCellOutput &&
+                        codeCellOutput.output_type === 'stream' &&
+                        codeCellOutput.name === 'stderr' &&
+                        codeCellOutput.hasOwnProperty('text')
+                    ) {
+                        const resultString = codeCellOutput.text as string;
+                        // See if this the IOPUB data rate limit problem
+                        if (resultString.includes('iopub_data_rate_limit')) {
+                            throw new JupyterDataRateLimitError();
+                        } else {
+                            const error = localize.DataScience.jupyterGetVariablesExecutionError().format(resultString);
+                            traceError(error);
+                            throw new Error(error);
+                        }
+                    }
+                    if (codeCellOutput && codeCellOutput.output_type === 'execute_result') {
+                        const data = codeCellOutput.data;
+                        if (data && data.hasOwnProperty('text/plain')) {
+                            // tslint:disable-next-line:no-any
+                            return (data as any)['text/plain'];
+                        }
+                    }
+                    if (
+                        codeCellOutput &&
+                        codeCellOutput.output_type === 'stream' &&
+                        codeCellOutput.hasOwnProperty('text')
+                    ) {
+                        return codeCellOutput.text as string;
+                    }
+                    if (
+                        codeCellOutput &&
+                        codeCellOutput.output_type === 'error' &&
+                        codeCellOutput.hasOwnProperty('traceback')
+                    ) {
+                        const traceback: string[] = codeCellOutput.traceback as string[];
+                        const stripped = traceback.map(stripAnsi).join('\r\n');
+                        const error = localize.DataScience.jupyterGetVariablesExecutionError().format(stripped);
                         traceError(error);
                         throw new Error(error);
                     }
-                }
-                if (codeCellOutput && codeCellOutput.output_type === 'execute_result') {
-                    const data = codeCellOutput.data;
-                    if (data && data.hasOwnProperty('text/plain')) {
-                        // tslint:disable-next-line:no-any
-                        return (data as any)['text/plain'];
-                    }
-                }
-                if (
-                    codeCellOutput &&
-                    codeCellOutput.output_type === 'stream' &&
-                    codeCellOutput.hasOwnProperty('text')
-                ) {
-                    return codeCellOutput.text as string;
-                }
-                if (
-                    codeCellOutput &&
-                    codeCellOutput.output_type === 'error' &&
-                    codeCellOutput.hasOwnProperty('traceback')
-                ) {
-                    const traceback: string[] = codeCellOutput.traceback as string[];
-                    const stripped = traceback.map(stripAnsi).join('\r\n');
-                    const error = localize.DataScience.jupyterGetVariablesExecutionError().format(stripped);
-                    traceError(error);
-                    throw new Error(error);
                 }
             }
         }

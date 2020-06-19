@@ -388,7 +388,7 @@ export namespace Settings {
     export const DefaultVariableQuery: IVariableQuery = {
         language: PYTHON_LANGUAGE,
         query:
-            "from types import ModuleType\\ndeny_list = ['sc', 'sqlContext', 'deny_list', 'url', 'Out', 'spark', 'In']\\nget_variables = lambda x: [x[0] for x in x.items() if not isinstance(x[1], ModuleType) and not hasattr(x[1], '__call__')]\\nlist(set([y for x in [get_variables(x) for x in [locals(), globals()]] for y in x if not y.startswith('_') and not y in deny_list]))",
+            "from types import ModuleType\ndeny_list = ['sc', 'sqlContext', 'deny_list', 'url', 'Out', 'spark', 'In']\nget_variables = lambda x: [x[0] for x in x.items() if not isinstance(x[1], ModuleType) and not hasattr(x[1], '__call__')]\nprint(list(set([y for x in [get_variables(x) for x in [locals(), globals()]] for y in x if not y.startswith('_') and not y in deny_list])))",
         parseExpr: "'(\\w+)'"
     };
 }
