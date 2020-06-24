@@ -39,7 +39,7 @@ suite('Unit Tests Test Explorer Tree View', () => {
         await treeViewService.activate();
         verify(
             appShell.createTreeView(
-                'python_tests',
+                'qubole_python_tests',
                 deepEqual({ showCollapseAll: true, treeDataProvider: instance(treeViewProvider) })
             )
         ).once();
@@ -60,7 +60,7 @@ suite('Unit Tests Test Explorer Tree View', () => {
             .setup((t) => t.reveal(typemoq.It.isAny()))
             .returns(() => Promise.resolve())
             .verifiable(typemoq.Times.once());
-        when(appShell.createTreeView('python_tests', anything())).thenReturn(treeView.object);
+        when(appShell.createTreeView('qubole_python_tests', anything())).thenReturn(treeView.object);
 
         await treeViewService.activate();
         await treeViewService.onRevealTestItem(data);

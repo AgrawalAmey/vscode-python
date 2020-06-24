@@ -7,7 +7,7 @@
         "usingNewInterpreterStorage": true
     },
     "languageServerVersion": "0.5.30",
-    "publisher": "qubole-ds",
+    "publisher": "qubole",
     "enableProposedApi": false,
     "author": {
         "name": "Qubole"
@@ -1148,99 +1148,99 @@
             "view/title": [
                 {
                     "command": "python.debugtests",
-                    "when": "view == python_tests && !busyTests",
+                    "when": "view == qubole_python_tests && !busyTests",
                     "group": "navigation@3"
                 },
                 {
                     "command": "python.runtests",
-                    "when": "view == python_tests && !busyTests",
+                    "when": "view == qubole_python_tests && !busyTests",
                     "group": "navigation@1"
                 },
                 {
                     "command": "python.stopTests",
-                    "when": "view == python_tests && busyTests",
+                    "when": "view == qubole_python_tests && busyTests",
                     "group": "navigation@1"
                 },
                 {
                     "command": "python.discoverTests",
-                    "when": "view == python_tests && !busyTests",
+                    "when": "view == qubole_python_tests && !busyTests",
                     "group": "navigation@4"
                 },
                 {
                     "command": "python.discoveringTests",
-                    "when": "view == python_tests && discoveringTests",
+                    "when": "view == qubole_python_tests && discoveringTests",
                     "group": "navigation@4"
                 },
                 {
                     "command": "python.runFailedTests",
-                    "when": "view == python_tests && hasFailedTests && !busyTests",
+                    "when": "view == qubole_python_tests && hasFailedTests && !busyTests",
                     "group": "navigation@2"
                 },
                 {
                     "command": "python.viewTestOutput",
-                    "when": "view == python_tests",
+                    "when": "view == qubole_python_tests",
                     "group": "navigation@5"
                 }
             ],
             "view/item/context": [
                 {
                     "command": "python.runtests",
-                    "when": "view == python_tests && viewItem == testWorkspaceFolder && !busyTests",
+                    "when": "view == qubole_python_tests && viewItem == testWorkspaceFolder && !busyTests",
                     "group": "inline@0"
                 },
                 {
                     "command": "python.debugtests",
-                    "when": "view == python_tests && viewItem == testWorkspaceFolder && !busyTests",
+                    "when": "view == qubole_python_tests && viewItem == testWorkspaceFolder && !busyTests",
                     "group": "inline@1"
                 },
                 {
                     "command": "python.discoverTests",
-                    "when": "view == python_tests && viewItem == testWorkspaceFolder && !busyTests",
+                    "when": "view == qubole_python_tests && viewItem == testWorkspaceFolder && !busyTests",
                     "group": "inline@2"
                 },
                 {
                     "command": "python.openTestNodeInEditor",
-                    "when": "view == python_tests && viewItem == function",
+                    "when": "view == qubole_python_tests && viewItem == function",
                     "group": "inline@2"
                 },
                 {
                     "command": "python.debugTestNode",
-                    "when": "view == python_tests && viewItem == function && !busyTests",
+                    "when": "view == qubole_python_tests && viewItem == function && !busyTests",
                     "group": "inline@1"
                 },
                 {
                     "command": "python.runTestNode",
-                    "when": "view == python_tests && viewItem == function && !busyTests",
+                    "when": "view == qubole_python_tests && viewItem == function && !busyTests",
                     "group": "inline@0"
                 },
                 {
                     "command": "python.openTestNodeInEditor",
-                    "when": "view == python_tests && viewItem == file",
+                    "when": "view == qubole_python_tests && viewItem == file",
                     "group": "inline@2"
                 },
                 {
                     "command": "python.debugTestNode",
-                    "when": "view == python_tests && viewItem == file && !busyTests",
+                    "when": "view == qubole_python_tests && viewItem == file && !busyTests",
                     "group": "inline@1"
                 },
                 {
                     "command": "python.runTestNode",
-                    "when": "view == python_tests && viewItem == file && !busyTests",
+                    "when": "view == qubole_python_tests && viewItem == file && !busyTests",
                     "group": "inline@0"
                 },
                 {
                     "command": "python.openTestNodeInEditor",
-                    "when": "view == python_tests && viewItem == suite",
+                    "when": "view == qubole_python_tests && viewItem == suite",
                     "group": "inline@2"
                 },
                 {
                     "command": "python.debugTestNode",
-                    "when": "view == python_tests && viewItem == suite && !busyTests",
+                    "when": "view == qubole_python_tests && viewItem == suite && !busyTests",
                     "group": "inline@1"
                 },
                 {
                     "command": "python.runTestNode",
-                    "when": "view == python_tests && viewItem == suite && !busyTests",
+                    "when": "view == qubole_python_tests && viewItem == suite && !busyTests",
                     "group": "inline@0"
                 }
             ]
@@ -2968,7 +2968,7 @@
         "views": {
             "test": [
                 {
-                    "id": "python_tests",
+                    "id": "qubole_python_tests",
                     "name": "Python",
                     "when": "testsDiscovered"
                 }

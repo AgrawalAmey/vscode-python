@@ -87,7 +87,7 @@ interface ICommandNameWithoutArgumentTypeMapping {
 export interface ICommandNameArgumentTypeMapping extends ICommandNameWithoutArgumentTypeMapping {
     ['vscode.openWith']: [Uri, string];
     ['workbench.action.quickOpen']: [string];
-    ['workbench.extensions.installExtension']: [Uri | 'qubole-python.python'];
+    ['workbench.extensions.installExtension']: [Uri | 'qubole.qubole-python'];
     ['setContext']: [string, boolean];
     ['python.reloadVSCode']: [string];
     ['revealLine']: [{ lineNumber: number; at: 'top' | 'center' | 'bottom' }];

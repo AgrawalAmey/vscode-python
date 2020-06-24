@@ -1,11 +1,11 @@
 {
     "activationEvents": [
-        "onCustomEditor:qubole-python.python.notebook.ipynb"
+        "onCustomEditor:qubole.qubole-python.notebook.ipynb"
     ],
     "contributes": {
         "customEditors": [
             {
-                "viewType": "qubole-python.python.notebook.ipynb",
+                "viewType": "qubole.qubole-python.notebook.ipynb",
                 "displayName": "Jupyter Notebook",
                 "selector": [
                     {

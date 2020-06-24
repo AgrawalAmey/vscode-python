@@ -30,7 +30,7 @@ export class TreeViewService implements IExtensionSingleActivationService, IDisp
         this.disposables.forEach((d) => d.dispose());
     }
     public async activate(): Promise<void> {
-        this._treeView = this.appShell.createTreeView('python_tests', {
+        this._treeView = this.appShell.createTreeView('qubole_python_tests', {
             showCollapseAll: true,
             treeDataProvider: this.treeViewProvider
         });

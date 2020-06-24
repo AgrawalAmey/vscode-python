@@ -13,7 +13,7 @@ export const PYTHON = [
 ];
 export const PYTHON_ALLFILES = [{ language: PYTHON_LANGUAGE }];
 
-export const PVSC_EXTENSION_ID = 'qubole-python.python';
+export const PVSC_EXTENSION_ID = 'qubole.qubole-python';
 export const CODE_RUNNER_EXTENSION_ID = 'formulahendry.code-runner';
 export const AppinsightsKey = 'AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217';
 
