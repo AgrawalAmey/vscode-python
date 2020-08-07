@@ -274,7 +274,7 @@ export class JupyterSession extends BaseJupyterSession {
             this.notebookFiles.push(
                 await contentsManager.newUntitled({
                     type: 'notebook',
-                    path: `Users/${(serverSettings as any).email}`, // tslint:disable-line:no-any
+                    path: `Users/${(serverSettings as any).email}/vscode`, // tslint:disable-line:no-any
                     name: `${name}.ipynb`,
                     kernel: { name: 'pysparkkernel' }
                     // tslint:disable-next-line: no-any
